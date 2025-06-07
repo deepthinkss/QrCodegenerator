@@ -1,15 +1,29 @@
 import QRCode from 'qrcode';
+import { QRCodeCustomization } from '../types';
 
-export const generateQRCode = async (text: string): Promise<string> => {
+export const defaultQRCustomization: QRCodeCustomization = {
+  size: 256,
+  errorCorrectionLevel: 'M',
+  foregroundColor: '#1F2937',
+  backgroundColor: '#FFFFFF',
+  margin: 2
+};
+
+export const generateQRCode = async (
+  text: string, 
+  customization: Partial<QRCodeCustomization> = {}
+): Promise<string> => {
+  const config = { ...defaultQRCustomization, ...customization };
+  
   try {
     const qrCodeDataUrl = await QRCode.toDataURL(text, {
-      width: 256,
-      margin: 2,
+      width: config.size,
+      margin: config.margin,
       color: {
-        dark: '#1F2937',
-        light: '#FFFFFF'
+        dark: config.foregroundColor,
+        light: config.backgroundColor
       },
-      errorCorrectionLevel: 'M'
+      errorCorrectionLevel: config.errorCorrectionLevel
     });
     return qrCodeDataUrl;
   } catch (error) {
@@ -26,3 +40,17 @@ export const downloadQRCode = (dataUrl: string, filename: string = 'qrcode.png')
   link.click();
   document.body.removeChild(link);
 };
+
+export const getQRCodeSizeOptions = () => [
+  { value: 128, label: 'Small (128px)' },
+  { value: 256, label: 'Medium (256px)' },
+  { value: 512, label: 'Large (512px)' },
+  { value: 1024, label: 'Extra Large (1024px)' }
+];
+
+export const getErrorCorrectionOptions = () => [
+  { value: 'L', label: 'Low (~7%)', description: 'Good for clean environments' },
+  { value: 'M', label: 'Medium (~15%)', description: 'Recommended for most uses' },
+  { value: 'Q', label: 'Quartile (~25%)', description: 'Good for outdoor use' },
+  { value: 'H', label: 'High (~30%)', description: 'Best for damaged surfaces' }
+];
