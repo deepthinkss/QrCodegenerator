@@ -7,12 +7,14 @@ interface QRCodeGeneratorProps {
   qrCodes: QRCodeData[];
   onQRCodeGenerated: (qrCode: QRCodeData) => void;
   onQRCodeScanned: (id: string) => void;
+  darkMode: boolean;
 }
 
 export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   qrCodes,
   onQRCodeGenerated,
-  onQRCodeScanned
+  onQRCodeScanned,
+  darkMode
 }) => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -79,18 +81,26 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   return (
     <div className="space-y-8">
       {/* QR Code Generator Form */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+      <div className={`rounded-2xl shadow-lg border p-8 transition-colors duration-300 ${
+        darkMode 
+          ? 'bg-gray-800 border-gray-700' 
+          : 'bg-white border-gray-100'
+      }`}>
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-purple-100 rounded-lg">
+          <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
             <QrCode className="w-6 h-6 text-purple-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900">QR Code Generator</h2>
+          <h2 className={`text-2xl font-bold transition-colors duration-300 ${
+            darkMode ? 'text-white' : 'text-gray-900'
+          }`}>QR Code Generator</h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Text Input */}
           <div>
-            <label htmlFor="qr-text" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="qr-text" className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
+              darkMode ? 'text-gray-300' : 'text-gray-700'
+            }`}>
               Content for QR Code *
             </label>
             <textarea
@@ -98,7 +108,11 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder="Enter text, URL, or any content for QR code..."
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors resize-none"
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors resize-none duration-300 ${
+                darkMode 
+                  ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400' 
+                  : 'border-gray-300 bg-white'
+              }`}
               rows={3}
               required
             />
@@ -119,22 +133,34 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
 
           {/* Customization Options */}
           {showCustomization && (
-            <div className="space-y-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
+            <div className={`space-y-4 p-4 rounded-lg border transition-colors duration-300 ${
+              darkMode 
+                ? 'bg-purple-900/20 border-purple-700' 
+                : 'bg-purple-50 border-purple-200'
+            }`}>
               <div className="flex items-center gap-2 mb-4">
                 <Palette className="w-4 h-4 text-purple-600" />
-                <h3 className="font-medium text-gray-900">QR Code Customization</h3>
+                <h3 className={`font-medium transition-colors duration-300 ${
+                  darkMode ? 'text-white' : 'text-gray-900'
+                }`}>QR Code Customization</h3>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Size */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
+                    darkMode ? 'text-gray-300' : 'text-gray-700'
+                  }`}>
                     Size
                   </label>
                   <select
                     value={customization.size}
                     onChange={(e) => updateCustomization({ size: parseInt(e.target.value) })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-300 ${
+                      darkMode 
+                        ? 'border-gray-600 bg-gray-700 text-white' 
+                        : 'border-gray-300 bg-white'
+                    }`}
                   >
                     {getQRCodeSizeOptions().map(option => (
                       <option key={option.value} value={option.value}>
@@ -146,13 +172,19 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
 
                 {/* Error Correction */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
+                    darkMode ? 'text-gray-300' : 'text-gray-700'
+                  }`}>
                     Error Correction
                   </label>
                   <select
                     value={customization.errorCorrectionLevel}
                     onChange={(e) => updateCustomization({ errorCorrectionLevel: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-300 ${
+                      darkMode 
+                        ? 'border-gray-600 bg-gray-700 text-white' 
+                        : 'border-gray-300 bg-white'
+                    }`}
                   >
                     {getErrorCorrectionOptions().map(option => (
                       <option key={option.value} value={option.value}>
@@ -164,7 +196,9 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
 
                 {/* Foreground Color */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
+                    darkMode ? 'text-gray-300' : 'text-gray-700'
+                  }`}>
                     Foreground Color
                   </label>
                   <div className="flex items-center gap-2">
@@ -178,7 +212,11 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
                       type="text"
                       value={customization.foregroundColor}
                       onChange={(e) => updateCustomization({ foregroundColor: e.target.value })}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                      className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-300 ${
+                        darkMode 
+                          ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400' 
+                          : 'border-gray-300 bg-white'
+                      }`}
                       placeholder="#1F2937"
                     />
                   </div>
@@ -186,7 +224,9 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
 
                 {/* Background Color */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
+                    darkMode ? 'text-gray-300' : 'text-gray-700'
+                  }`}>
                     Background Color
                   </label>
                   <div className="flex items-center gap-2">
@@ -200,7 +240,11 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
                       type="text"
                       value={customization.backgroundColor}
                       onChange={(e) => updateCustomization({ backgroundColor: e.target.value })}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                      className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-300 ${
+                        darkMode 
+                          ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400' 
+                          : 'border-gray-300 bg-white'
+                      }`}
                       placeholder="#FFFFFF"
                     />
                   </div>
@@ -209,7 +253,9 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
 
               {/* Margin */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
+                  darkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>
                   Margin: {customization.margin}
                 </label>
                 <input
@@ -244,13 +290,23 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
 
       {/* Generated QR Codes */}
       {qrCodes.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Generated QR Codes</h3>
+        <div className={`rounded-2xl shadow-lg border p-8 transition-colors duration-300 ${
+          darkMode 
+            ? 'bg-gray-800 border-gray-700' 
+            : 'bg-white border-gray-100'
+        }`}>
+          <h3 className={`text-lg font-semibold mb-6 transition-colors duration-300 ${
+            darkMode ? 'text-white' : 'text-gray-900'
+          }`}>Generated QR Codes</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {qrCodes.map((qrCode) => (
               <div
                 key={qrCode.id}
-                className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+                className={`border rounded-lg p-6 hover:shadow-md transition-all duration-300 ${
+                  darkMode 
+                    ? 'border-gray-600 bg-gray-700/50' 
+                    : 'border-gray-200 bg-white'
+                }`}
               >
                 <div className="flex flex-col items-center">
                   {/* QR Code Image */}
@@ -264,13 +320,23 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
                   
                   {/* Content */}
                   <div className="w-full">
-                    <p className="text-sm text-gray-600 mb-2">Content:</p>
-                    <div className="bg-gray-50 rounded-lg p-3 border border-gray-200 mb-4">
-                      <p className="text-gray-900 break-all text-sm">{qrCode.url}</p>
+                    <p className={`text-sm mb-2 transition-colors duration-300 ${
+                      darkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}>Content:</p>
+                    <div className={`rounded-lg p-3 border mb-4 transition-colors duration-300 ${
+                      darkMode 
+                        ? 'bg-gray-600 border-gray-500' 
+                        : 'bg-gray-50 border-gray-200'
+                    }`}>
+                      <p className={`break-all text-sm transition-colors duration-300 ${
+                        darkMode ? 'text-gray-200' : 'text-gray-900'
+                      }`}>{qrCode.url}</p>
                     </div>
                     
                     {/* Stats */}
-                    <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                    <div className={`flex items-center justify-between text-xs mb-4 transition-colors duration-300 ${
+                      darkMode ? 'text-gray-400' : 'text-gray-500'
+                    }`}>
                       <span>{qrCode.scanCount} scans</span>
                       <span>{qrCode.createdAt.toLocaleDateString()}</span>
                     </div>

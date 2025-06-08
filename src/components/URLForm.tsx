@@ -8,6 +8,7 @@ interface URLFormProps {
   onSubmit: (data: URLFormData) => void;
   isLoading: boolean;
   existingUrls: ShortenedUrl[];
+  darkMode: boolean;
 }
 
 export interface URLFormData {
@@ -18,7 +19,7 @@ export interface URLFormData {
   tags?: string[];
 }
 
-export const URLForm: React.FC<URLFormProps> = ({ onSubmit, isLoading, existingUrls }) => {
+export const URLForm: React.FC<URLFormProps> = ({ onSubmit, isLoading, existingUrls, darkMode }) => {
   const [formData, setFormData] = useState<URLFormData>({
     url: '',
     customAlias: '',
@@ -81,18 +82,26 @@ export const URLForm: React.FC<URLFormProps> = ({ onSubmit, isLoading, existingU
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+    <div className={`rounded-2xl shadow-lg border p-8 transition-colors duration-300 ${
+      darkMode 
+        ? 'bg-gray-800 border-gray-700' 
+        : 'bg-white border-gray-100'
+    }`}>
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-blue-100 rounded-lg">
-          <Link className="w-6 h-6 text-blue-600" />
+        <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
+          <Link className="w-6 h-6 text-emerald-600" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900">Create Short Link</h2>
+        <h2 className={`text-2xl font-bold transition-colors duration-300 ${
+          darkMode ? 'text-white' : 'text-gray-900'
+        }`}>Create Short Link</h2>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* URL Input */}
         <div>
-          <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="url" className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
+            darkMode ? 'text-gray-300' : 'text-gray-700'
+          }`}>
             Long URL *
           </label>
           <input
@@ -101,8 +110,14 @@ export const URLForm: React.FC<URLFormProps> = ({ onSubmit, isLoading, existingU
             value={formData.url}
             onChange={(e) => setFormData(prev => ({ ...prev, url: e.target.value }))}
             placeholder="https://example.com/very-long-url-that-needs-shortening"
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-              errors.url ? 'border-red-300' : warnings.url ? 'border-yellow-300' : 'border-gray-300'
+            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-300 ${
+              errors.url 
+                ? 'border-red-300' 
+                : warnings.url 
+                  ? 'border-yellow-300' 
+                  : darkMode 
+                    ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400' 
+                    : 'border-gray-300 bg-white'
             }`}
             required
           />
@@ -124,29 +139,41 @@ export const URLForm: React.FC<URLFormProps> = ({ onSubmit, isLoading, existingU
         <button
           type="button"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors"
+          className="text-emerald-600 hover:text-emerald-700 font-medium text-sm transition-colors"
         >
           {showAdvanced ? 'Hide' : 'Show'} Advanced Options
         </button>
 
         {/* Advanced Options */}
         {showAdvanced && (
-          <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <div className={`space-y-4 p-4 rounded-lg border transition-colors duration-300 ${
+            darkMode 
+              ? 'bg-gray-700/50 border-gray-600' 
+              : 'bg-gray-50 border-gray-200'
+          }`}>
             {/* Custom Alias */}
             <div>
-              <label htmlFor="customAlias" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="customAlias" className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
+                darkMode ? 'text-gray-300' : 'text-gray-700'
+              }`}>
                 Custom Alias (Optional)
               </label>
               <div className="flex items-center">
-                <span className="text-gray-500 text-sm mr-2">lnkf.ge/</span>
+                <span className={`text-sm mr-2 transition-colors duration-300 ${
+                  darkMode ? 'text-gray-400' : 'text-gray-500'
+                }`}>lnkf.ge/</span>
                 <input
                   type="text"
                   id="customAlias"
                   value={formData.customAlias}
                   onChange={(e) => setFormData(prev => ({ ...prev, customAlias: e.target.value }))}
                   placeholder="my-custom-link"
-                  className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                    errors.customAlias ? 'border-red-300' : 'border-gray-300'
+                  className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-300 ${
+                    errors.customAlias 
+                      ? 'border-red-300' 
+                      : darkMode 
+                        ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400' 
+                        : 'border-gray-300 bg-white'
                   }`}
                   pattern="[a-zA-Z0-9_-]+"
                   minLength={3}
@@ -156,14 +183,18 @@ export const URLForm: React.FC<URLFormProps> = ({ onSubmit, isLoading, existingU
               {errors.customAlias && (
                 <p className="text-red-500 text-sm mt-1">{errors.customAlias}</p>
               )}
-              <p className="text-gray-500 text-xs mt-1">
+              <p className={`text-xs mt-1 transition-colors duration-300 ${
+                darkMode ? 'text-gray-400' : 'text-gray-500'
+              }`}>
                 3-20 characters, letters, numbers, hyphens, and underscores only
               </p>
             </div>
 
             {/* Expiration */}
             <div>
-              <label htmlFor="expiration" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="expiration" className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
+                darkMode ? 'text-gray-300' : 'text-gray-700'
+              }`}>
                 <Calendar className="w-4 h-4 inline mr-1" />
                 Expiration (Optional)
               </label>
@@ -174,7 +205,11 @@ export const URLForm: React.FC<URLFormProps> = ({ onSubmit, isLoading, existingU
                   ...prev, 
                   expirationDays: e.target.value ? parseInt(e.target.value) : undefined 
                 }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-300 ${
+                  darkMode 
+                    ? 'border-gray-600 bg-gray-700 text-white' 
+                    : 'border-gray-300 bg-white'
+                }`}
               >
                 <option value="">Never expires</option>
                 <option value="1">1 day</option>
@@ -187,7 +222,9 @@ export const URLForm: React.FC<URLFormProps> = ({ onSubmit, isLoading, existingU
 
             {/* Description */}
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="description" className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
+                darkMode ? 'text-gray-300' : 'text-gray-700'
+              }`}>
                 <FileText className="w-4 h-4 inline mr-1" />
                 Description (Optional)
               </label>
@@ -197,14 +234,20 @@ export const URLForm: React.FC<URLFormProps> = ({ onSubmit, isLoading, existingU
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 placeholder="Brief description of this link"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-300 ${
+                  darkMode 
+                    ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400' 
+                    : 'border-gray-300 bg-white'
+                }`}
                 maxLength={100}
               />
             </div>
 
             {/* Tags */}
             <div>
-              <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="tags" className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
+                darkMode ? 'text-gray-300' : 'text-gray-700'
+              }`}>
                 <Tag className="w-4 h-4 inline mr-1" />
                 Tags (Optional)
               </label>
@@ -214,9 +257,15 @@ export const URLForm: React.FC<URLFormProps> = ({ onSubmit, isLoading, existingU
                 value={formData.tags?.join(', ') || ''}
                 onChange={(e) => handleTagsChange(e.target.value)}
                 placeholder="marketing, campaign, social-media"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-300 ${
+                  darkMode 
+                    ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400' 
+                    : 'border-gray-300 bg-white'
+                }`}
               />
-              <p className="text-gray-500 text-xs mt-1">
+              <p className={`text-xs mt-1 transition-colors duration-300 ${
+                darkMode ? 'text-gray-400' : 'text-gray-500'
+              }`}>
                 Separate tags with commas
               </p>
             </div>
@@ -227,7 +276,7 @@ export const URLForm: React.FC<URLFormProps> = ({ onSubmit, isLoading, existingU
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isLoading ? (
             <>

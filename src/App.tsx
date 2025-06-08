@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, Github, Twitter, BarChart3, Settings, Trash2 } from 'lucide-react';
+import { Zap, Github, Twitter, BarChart3, Settings, Trash2, Moon, Sun } from 'lucide-react';
 import { URLForm, URLFormData } from './components/URLForm';
 import { URLList } from './components/URLList';
 import { QRCodeGenerator } from './components/QRCodeGenerator';
@@ -18,13 +18,21 @@ function App() {
   const [activeTab, setActiveTab] = useState<'shortener' | 'qrcode' | 'analytics'>('shortener');
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [darkMode, setDarkMode] = useState(false);
 
   // Load data from localStorage on mount
   useEffect(() => {
     const savedUrls = loadUrls();
     const savedActivities = loadActivities();
+    const savedDarkMode = localStorage.getItem('snaplink_darkmode') === 'true';
     setShortenedUrls(savedUrls);
     setActivities(savedActivities);
+    setDarkMode(savedDarkMode);
+    
+    // Apply dark mode class to document
+    if (savedDarkMode) {
+      document.documentElement.classList.add('dark');
+    }
   }, []);
 
   // Save data to localStorage when state changes
@@ -35,6 +43,19 @@ function App() {
   useEffect(() => {
     saveActivities(activities);
   }, [activities]);
+
+  // Handle dark mode toggle
+  const toggleDarkMode = () => {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    localStorage.setItem('snaplink_darkmode', newDarkMode.toString());
+    
+    if (newDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
 
   const handleUrlShortened = async (formData: URLFormData) => {
     setIsLoading(true);
@@ -206,27 +227,52 @@ function App() {
   const analytics = generateAnalytics(shortenedUrls, activities);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className={`min-h-screen transition-colors duration-300 ${
+      darkMode 
+        ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-purple-900' 
+        : 'bg-gradient-to-br from-blue-50 via-white to-purple-50'
+    }`}>
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10">
+      <header className={`backdrop-blur-sm border-b sticky top-0 z-10 transition-colors duration-300 ${
+        darkMode 
+          ? 'bg-gray-900/80 border-gray-700' 
+          : 'bg-white/80 border-gray-200'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
+              <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg">
                 <Zap className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  LinkForge Pro
+                <h1 className={`text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent`}>
+                  SnapLink
                 </h1>
-                <p className="text-xs text-gray-600">Professional URL Shortener & QR Generator</p>
+                <p className={`text-xs transition-colors duration-300 ${
+                  darkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}>Professional URL Shortener & QR Generator</p>
               </div>
             </div>
             
             <div className="flex items-center gap-4">
               <button
+                onClick={toggleDarkMode}
+                className={`p-2 rounded-lg transition-colors duration-300 ${
+                  darkMode 
+                    ? 'text-gray-300 hover:text-yellow-400 hover:bg-gray-800' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+                title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              >
+                {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+              <button
                 onClick={handleClearAllData}
-                className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                className={`p-2 rounded-lg transition-colors duration-300 ${
+                  darkMode 
+                    ? 'text-gray-400 hover:text-red-400 hover:bg-red-900/20' 
+                    : 'text-gray-600 hover:text-red-600 hover:bg-red-50'
+                }`}
                 title="Clear all data"
               >
                 <Trash2 className="w-5 h-5" />
@@ -235,7 +281,11 @@ function App() {
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className={`p-2 rounded-lg transition-colors duration-300 ${
+                  darkMode 
+                    ? 'text-gray-400 hover:text-gray-200' 
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
               >
                 <Github className="w-5 h-5" />
               </a>
@@ -243,7 +293,11 @@ function App() {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className={`p-2 rounded-lg transition-colors duration-300 ${
+                  darkMode 
+                    ? 'text-gray-400 hover:text-gray-200' 
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
               >
                 <Twitter className="w-5 h-5" />
               </a>
@@ -255,26 +309,36 @@ function App() {
       {/* Hero Section */}
       <section className="py-16 text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className={`text-4xl sm:text-5xl font-bold mb-6 transition-colors duration-300 ${
+            darkMode ? 'text-white' : 'text-gray-900'
+          }`}>
             Professional URL Management &{' '}
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
               QR Code Generation
             </span>
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+          <p className={`text-xl mb-8 max-w-3xl mx-auto transition-colors duration-300 ${
+            darkMode ? 'text-gray-300' : 'text-gray-600'
+          }`}>
             Create short, secure links with custom aliases, expiration dates, and comprehensive analytics. 
             Generate beautiful QR codes with full customization options. Built for professionals who demand the best.
           </p>
           
           {/* Tab Navigation */}
           <div className="flex items-center justify-center mb-8">
-            <div className="bg-white rounded-full p-1 shadow-lg border border-gray-200">
+            <div className={`rounded-full p-1 shadow-lg border transition-colors duration-300 ${
+              darkMode 
+                ? 'bg-gray-800 border-gray-700' 
+                : 'bg-white border-gray-200'
+            }`}>
               <button
                 onClick={() => setActiveTab('shortener')}
                 className={`px-6 py-3 rounded-full font-semibold transition-all duration-200 ${
                   activeTab === 'shortener'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md'
+                    : darkMode 
+                      ? 'text-gray-300 hover:text-white' 
+                      : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
                 URL Shortener
@@ -283,8 +347,10 @@ function App() {
                 onClick={() => setActiveTab('qrcode')}
                 className={`px-6 py-3 rounded-full font-semibold transition-all duration-200 ${
                   activeTab === 'qrcode'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md'
+                    : darkMode 
+                      ? 'text-gray-300 hover:text-white' 
+                      : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
                 QR Generator
@@ -293,8 +359,10 @@ function App() {
                 onClick={() => setActiveTab('analytics')}
                 className={`px-6 py-3 rounded-full font-semibold transition-all duration-200 ${
                   activeTab === 'analytics'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md'
+                    : darkMode 
+                      ? 'text-gray-300 hover:text-white' 
+                      : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
                 <BarChart3 className="w-4 h-4 inline mr-2" />
@@ -314,6 +382,7 @@ function App() {
                 onSubmit={handleUrlShortened}
                 isLoading={isLoading}
                 existingUrls={shortenedUrls}
+                darkMode={darkMode}
               />
               <URLList
                 urls={shortenedUrls}
@@ -322,6 +391,7 @@ function App() {
                 onSimulateClick={handleSimulateClick}
                 copiedId={copiedId}
                 onCopy={copyToClipboard}
+                darkMode={darkMode}
               />
             </div>
           )}
@@ -331,11 +401,12 @@ function App() {
               qrCodes={qrCodes}
               onQRCodeGenerated={handleQRCodeGenerated}
               onQRCodeScanned={handleQRCodeScanned}
+              darkMode={darkMode}
             />
           )}
 
           {activeTab === 'analytics' && (
-            <Analytics analytics={analytics} />
+            <Analytics analytics={analytics} darkMode={darkMode} />
           )}
         </div>
       </main>
@@ -346,10 +417,10 @@ function App() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
+                <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg">
                   <Zap className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold">LinkForge Pro</h3>
+                <h3 className="text-xl font-bold">SnapLink</h3>
               </div>
               <p className="text-gray-400 mb-4">
                 The ultimate professional tool for URL shortening, QR code generation, and link analytics. 
@@ -365,7 +436,7 @@ function App() {
                 <li>QR Code Customization</li>
                 <li>Comprehensive Analytics</li>
                 <li>Security Validation</li>
-                <li>Bulk Operations</li>
+                <li>Dark Mode Support</li>
               </ul>
             </div>
             
@@ -383,7 +454,7 @@ function App() {
           </div>
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 LinkForge Pro. Built with React, TypeScript, and modern security practices.</p>
+            <p>&copy; 2025 SnapLink. Built with React, TypeScript, and modern security practices.</p>
           </div>
         </div>
       </footer>
