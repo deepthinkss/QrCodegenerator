@@ -4,7 +4,8 @@ A fast, modern web app built with **React**, styled with **Tailwind CSS**, and b
 Deployed on **Netlify**, it features optimized static builds, CDN-backed delivery for instant loads, and deploy previews for pull requests.  
 Supports SPA routing, responsive UI, and optional serverless functions.
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/YOUR_BADGE/deploy-status)](https://app.netlify.com/sites/YOUR_SITE)
+[![Netlify Deployed App](https://upload.wikimedia.org/wikipedia/commons/b/b8/Netlify_logo_%282%29.svg)](https://precious-elf-1e315b.netlify.app/)
+
 
 ---
 
@@ -127,3 +128,6 @@ React
 Vite
 Tailwind CSS
 Netlify for hosting and CI/CD support
+
+ The UI 
+ <img width="1075" height="2039" alt="screen1" src="https://github.com/user-attachments/assets/85a42547-d80d-40cc-b48d-1316437daa29" />
