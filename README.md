@@ -131,3 +131,5 @@ Netlify for hosting and CI/CD support
 
  The UI 
  <img width="1075" height="2039" alt="screen1" src="https://github.com/user-attachments/assets/85a42547-d80d-40cc-b48d-1316437daa29" />
+<img width="1075" height="1710" alt="screen2" src="https://github.com/user-attachments/assets/46151049-b587-4aac-8569-dc9b5b29635a" />
+<img width="1075" height="2296" alt="screen3" src="https://github.com/user-attachments/assets/d10bcc46-9f59-4cf6-ac4b-85c24ba7f89f" />
