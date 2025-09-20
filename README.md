@@ -6,7 +6,6 @@ Supports SPA routing, responsive UI, and optional serverless functions.
 
 [![Netlify Deployed App](https://upload.wikimedia.org/wikipedia/commons/b/b8/Netlify_logo_%282%29.svg)](https://precious-elf-1e315b.netlify.app/)
 
-
 ---
 
 ## 🚀 Features
