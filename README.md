@@ -66,7 +66,7 @@ npm run build
 ```
 The output will be inside the dist/ folder.
 
-🌐 Preview build locally
+🌐 Preview build locally:
 ```
 npm run preview
 ```
